@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String?   @unique
+  fullName     String
+  image        String?
+  email        String   @unique
+  roomsCreated Room[]
+  roomsJoined  Player[]
+}
+
+model Room {
+  id Int @id @default(autoincrement())
+
+  hostId  Int
+  host    User       @relation(fields: [hostId], references: [id])
+  players Player[]
+  status  roomStatus @default(NOTSTARTED)
+
+  //settings
+  difficulty     Difficulty @default(EASY)
+  language       Language   @default(JAVASCRIPT)
+  timerInSeconds Int        @default(300) //eg. 5 minutes
+  mode           modes      @default(BATTLE)
+
+  startedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Player {
+  id       Int      @id @default(autoincrement())
+  playerId Int
+  player   User     @relation(fields: [playerId], references: [id])
+  roomId   Int
+  room     Room     @relation(fields: [roomId], references: [id])
+  joinedAt DateTime @default(now())
+
+  @@unique([playerId, roomId])
+}
+
+enum modes {
+  DUEL //1v1
+  BATTLE //more than 2 players
+}
+
+enum roomStatus {
+  NOTSTARTED
+  STARTED
+  FINISHED
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum Language {
+  JAVASCRIPT
+  PYTHON
+  CPP
+  JAVA
+  GO
+}
