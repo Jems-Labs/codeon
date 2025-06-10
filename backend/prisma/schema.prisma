@@ -9,6 +9,7 @@ datasource db {
 
 model User {
   id           Int      @id @default(autoincrement())
+  clerkId String? @unique
   username     String?   @unique
   fullName     String
   image        String?
