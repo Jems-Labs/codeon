@@ -1,47 +1,20 @@
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-  useUser,
-  useAuth,
-} from "@clerk/clerk-react";
-import axios from "axios";
-import { useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Navbar from "./components/Navbar";
+import Dashboard from "./pages/Dashboard";
+
 
 export default function App() {
-  const { user, isSignedIn, isLoaded } = useUser();
-  const { getToken } = useAuth();
 
-  useEffect(() => {
-    if (isSignedIn && user && isLoaded) {
-      const userData = {
-      fullName: user.fullName || "",
-      username: user.username || "",
-      image: user.imageUrl || "",
-      email: user.primaryEmailAddress?.emailAddress || "",
-      clerkId: user.id,
-    };
-
-      callUserSync(userData);
-    }
-    async function callUserSync(userData: any) {
-      const token = await getToken();
-      await axios.post("http://localhost:5001/api/user/sync", userData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    }
-  }, [isSignedIn, user, isLoaded]);
   return (
-    <header>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-    </header>
+    <div>
+      <Navbar />
+      <div className="py-20">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </div>
+    </div>
   );
 }

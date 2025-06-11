@@ -7,7 +7,7 @@ import http from "http";
 import { Server } from "socket.io";
 import {clerkMiddleware} from '@clerk/express'
 import userRoutes from './routes/user'
-
+import {} from "./types"
 
 
 dotenv.config();
