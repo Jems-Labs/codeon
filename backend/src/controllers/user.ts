@@ -31,3 +31,31 @@ export async function handleSyncUser(req: Request, res: any) {
     return res.status(500).json({ msg: "User already exists" });
   }
 }
+export async function handleGetRoom(req: Request, res: any){
+  try {
+    const id = req.params['id'];
+
+    if(!id) return res.status(400).json({msg: "No id provided"});
+
+    const room = await prisma.room.findUnique({
+      where: {
+        id: parseInt(id)
+      },
+      include: {
+        players: {
+          include: {
+            player: true
+          }
+        },
+        host: true
+      }
+    });
+
+
+    if(!room) return res.status(404).json({msg: "No room provided"});
+
+    return res.status(200).json(room);
+  } catch {
+    return res.status(500).json({msg: "Internal Server Error"});
+  }
+}
