@@ -3,6 +3,7 @@ import App from './App.tsx'
 import './index.css'
 import { ClerkProvider } from '@clerk/clerk-react'
 import { BrowserRouter } from 'react-router-dom'
+import { SocketProvider } from './stores/SocketProvider.tsx'
 // Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -13,9 +14,11 @@ if (!PUBLISHABLE_KEY) {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl='/' >
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <SocketProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </SocketProvider>
     </ClerkProvider>
   </>,
 )

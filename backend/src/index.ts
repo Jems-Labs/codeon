@@ -8,6 +8,7 @@ import { Server } from "socket.io";
 import {clerkMiddleware} from '@clerk/express'
 import userRoutes from './routes/user'
 import {} from "./types"
+import { hydrateActiveRooms } from "./tools/roomTools";
 
 
 dotenv.config();
@@ -35,8 +36,11 @@ app.use(clerkMiddleware())
 
 app.use("/api/user",  userRoutes);
 //listening all socket events here
-listener(io);
+(async () => {
+  const activeRooms = await hydrateActiveRooms();
+  listener(io, activeRooms);
 
-app.listen(process.env.PORT, () => {
-  console.log("Server started");
-});
+  server.listen(process.env.PORT, () => {
+    console.log("Server Started");
+  });
+})();
