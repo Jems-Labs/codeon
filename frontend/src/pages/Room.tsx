@@ -1,6 +1,6 @@
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Card,
@@ -15,13 +15,14 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { RoomType } from "@/lib/types";
 import { useSocket } from "@/stores/SocketProvider";
+import { toast } from "sonner";
 
 function Room() {
   const [room, setRoom] = useState<RoomType | null>(null);
   const { getToken } = useAuth();
   const { id } = useParams();
   const socket = useSocket();
-
+  const { user } = useUser();
   async function fetchRoom() {
     const token = await getToken();
     const res = await axios.get(`http://localhost:5001/api/user/room/${id}`, {
@@ -42,14 +43,35 @@ function Room() {
     const handlePlayerJoined = () => {
       fetchRoom();
     };
-
+    const handlePlayerLeft = ({ playerId }: any) => {
+      toast.info(`${playerId} left room`);
+      fetchRoom();
+    };
+    const handleRoomStarted = () => {
+      toast.success("Room Started"); //update the state or fetch room
+    }
+    const handleRoomTimer = ({ remaining }: { remaining: number }) => {
+      console.log("⏱ Timer:", remaining, "seconds left");
+      // optionally: set a local state to show it in UI
+    };
     socket.on("player-joined", handlePlayerJoined);
-
+    socket.on("player-left", handlePlayerLeft);
+    socket.on("room-started", handleRoomStarted);
+    socket.on("room-timer", handleRoomTimer);
     return () => {
       socket.off("player-joined", handlePlayerJoined);
+      socket.off("player-left", handlePlayerLeft);
+      socket.off("room-started", handleRoomStarted);
+      socket.off("room-timer", handleRoomTimer); 
     };
   }, [socket]);
 
+  const handleLeaveRoom = () => {
+    socket?.emit("leave-room");
+  }
+  const handleStartRoom = () => {
+    socket?.emit("start-room", id)
+  }
   if (!room) {
     return (
       <div className="p-6">
@@ -57,7 +79,6 @@ function Room() {
       </div>
     );
   }
-  console.log(room);
   return (
     <div className="p-6 flex flex-col gap-6">
       <Card className="w-full shadow-lg">
@@ -106,18 +127,21 @@ function Room() {
                 <AvatarFallback>{player.username[0]}</AvatarFallback>
               </Avatar>
               <div>
-                <div className="font-medium">{player.fullName}</div>
-                <div className="text-sm text-muted-foreground">
-                  {player.username}
-                </div>
+                <div className="font-medium">{player.fullName} </div>
+                {/* {room.hostId === (player.playerId || player.id) && <Badge className="ml-2">HOST</Badge>} */}
               </div>
             </div>
           ))}
         </CardContent>
       </Card>
+      <div className="flex justify-end gap-3">
 
-      <div className="flex justify-end">
-        <Button disabled={room.status !== "NOTSTARTED"}>Start Battle</Button>
+        <Button onClick={handleLeaveRoom} variant={"destructive"}>Leave</Button>
+        {room.hostId === user?.id &&
+          <div className="flex justify-end">
+            <Button disabled={room.status !== "NOTSTARTED"} onClick={handleStartRoom}>Start</Button>
+          </div>
+        }
       </div>
     </div>
   );

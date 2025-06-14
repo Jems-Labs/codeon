@@ -37,7 +37,7 @@ app.use(clerkMiddleware())
 app.use("/api/user",  userRoutes);
 //listening all socket events here
 (async () => {
-  const activeRooms = await hydrateActiveRooms();
+  const activeRooms = await hydrateActiveRooms(io);
   listener(io, activeRooms);
 
   server.listen(process.env.PORT, () => {

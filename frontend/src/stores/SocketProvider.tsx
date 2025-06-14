@@ -1,4 +1,4 @@
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth, useUser } from '@clerk/clerk-react';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
 const SocketContext = createContext<Socket | null>(null)
@@ -7,13 +7,15 @@ export const useSocket = () => useContext(SocketContext);
 
 
 interface SocketProviderProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 export const SocketProvider = ({ children }: SocketProviderProps) => {
-    const { getToken } = useAuth();
-    const [socket, setSocket] = useState<Socket | null>(null);
-    useEffect(() => {
+  const { getToken } = useAuth();
+  const {user} = useUser();
+
+  const [socket, setSocket] = useState<Socket | null>(null);
+  useEffect(() => {
     let sock: Socket;
 
     const setupSocket = async () => {
@@ -25,7 +27,11 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
           token,
         },
       });
-
+      sock.on("connect", ()=>{
+         if (user?.id) {
+        sock.emit("reconnect-user", user.id);
+      }
+      })
       setSocket(sock);
     };
 
@@ -34,12 +40,12 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     return () => {
       if (sock) sock.disconnect();
     };
-  }, [getToken]);
+  }, [getToken, user?.id]);
 
 
-    return (
-        <SocketContext.Provider value={socket}>
-            {children}
-        </SocketContext.Provider>
-    )
+  return (
+    <SocketContext.Provider value={socket}>
+      {children}
+    </SocketContext.Provider>
+  )
 }
