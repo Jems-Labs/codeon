@@ -1,0 +1,200 @@
+export const questions = [
+  {
+    id: 1,
+    language: "CPP",
+    difficulty: "EASY",
+    title: "Reverse String",
+    description: "Given a string, return a new string that is the reverse of the input. You must reverse the characters in place or by creating a new string.",
+    function: "string reverseString(string s);",
+    testCases: [
+      { input: '"hello"', expected: '"olleh"' },
+      { input: '"world"', expected: '"dlrow"' },
+    ],
+  },
+  {
+    id: 2,
+    language: "CPP",
+    difficulty: "EASY",
+    title: "Sum of Array",
+    description: "Given an array of integers, return the sum of all the elements. If the array is empty, return 0.",
+    function: "int sumArray(vector<int> arr);",
+    testCases: [
+      { input: [1, 2, 3], expected: 6 },
+      { input: [], expected: 0 },
+    ],
+  },
+  {
+    id: 3,
+    language: "CPP",
+    difficulty: "EASY",
+    title: "Check Even",
+    description: "Given an integer, return true if the number is even, otherwise return false.",
+    function: "bool isEven(int n);",
+    testCases: [
+      { input: 4, expected: true },
+      { input: 7, expected: false },
+    ],
+  },
+  {
+    id: 4,
+    language: "CPP",
+    difficulty: "HARD",
+    title: "Merge K Sorted Lists",
+    description: "You are given k sorted linked lists. Merge them all into one sorted linked list and return the head of the merged list.",
+    function: "ListNode* mergeKLists(vector<ListNode*>& lists);",
+    testCases: [
+      {
+        input: [
+          [1, 4, 5],
+          [1, 3, 4],
+          [2, 6],
+        ],
+        expected: [1, 1, 2, 3, 4, 4, 5, 6],
+      },
+      {
+        input: [[1, 2, 3], [4, 5], [], [0, 6]],
+        expected: [0, 1, 2, 3, 4, 5, 6],
+      },
+    ],
+  },
+  {
+    id: 5,
+    language: "PYTHON",
+    difficulty: "EASY",
+    title: "Is Positive",
+    description: "Determine whether a given integer is positive. Return True if the number is greater than 0, otherwise return False.",
+    function: "def is_positive(n: int) -> bool:",
+    testCases: [
+      { input: 10, expected: true },
+      { input: -5, expected: false },
+    ],
+  },
+  {
+    id: 6,
+    language: "PYTHON",
+    difficulty: "MEDIUM",
+    title: "Matrix Transpose",
+    description: "Given a 2D matrix, return the transpose of the matrix. The transpose of a matrix is a new matrix whose rows are the columns of the original.",
+    function: "def transpose(matrix: list[list[int]]) -> list[list[int]]:",
+    testCases: [
+      {
+        input: [
+          [1, 2, 3],
+          [4, 5, 6],
+        ],
+        expected: [
+          [1, 4],
+          [2, 5],
+          [3, 6],
+        ],
+      },
+      {
+        input: [
+          [1, 2],
+          [3, 4],
+          [5, 6],
+        ],
+        expected: [
+          [1, 3, 5],
+          [2, 4, 6],
+        ],
+      },
+    ],
+  },
+  {
+    id: 7,
+    language: "PYTHON",
+    difficulty: "EASY",
+    title: "String Contains Digit",
+    description: "Check if the input string contains at least one digit (0–9). Return True if it does, otherwise return False.",
+    function: "def contains_digit(s: str) -> bool:",
+    testCases: [
+      { input: '"hello2"', expected: true },
+      { input: '"world"', expected: false },
+    ],
+  },
+  {
+    id: 8,
+    language: "JAVASCRIPT",
+    difficulty: "EASY",
+    title: "Starts With A",
+    description: "Check whether the given string starts with the character 'A'. Return true if it does, otherwise return false.",
+    function: "function startsWithA(str) { }",
+    testCases: [
+      { input: '"Apple"', expected: true },
+      { input: '"banana"', expected: false },
+    ],
+  },
+  {
+    id: 9,
+    language: "JAVASCRIPT",
+    difficulty: "EASY",
+    title: "Double Elements",
+    description: "Given an array of numbers, return a new array with each element doubled in value.",
+    function: "function doubleArray(arr) { }",
+    testCases: [
+      { input: [1, 2, 3], expected: [2, 4, 6] },
+      { input: [2, 3, 6], expected: [4, 6, 12] },
+    ],
+  },
+  {
+    id: 10,
+    language: "JAVASCRIPT",
+    difficulty: "MEDIUM",
+    title: "Unique Characters",
+    description: "Given a string, determine if all characters are unique. Return true if no character repeats, otherwise return false.",
+    function: "function hasUniqueChars(str) { }",
+    testCases: [
+      { input: '"abc"', expected: true },
+      { input: '"aabc"', expected: false },
+    ],
+  },
+  {
+    id: 11,
+    language: "JAVASCRIPT",
+    difficulty: "MEDIUM",
+    title: "Find Missing Number",
+    description: "Given an array containing n distinct numbers in the range 0 to n, find and return the missing number.",
+    function: "function findMissingNumber(arr) { }",
+    testCases: [
+      { input: [3, 0, 1], expected: 2 },
+      { input: [5, 4, 2], expected: 3 },
+    ],
+  },
+  {
+    id: 12,
+    language: "JAVASCRIPT",
+    difficulty: "HARD",
+    title: "Largest Rectangle in Histogram",
+    description: "Given an array of integers representing the heights of bars in a histogram, return the area of the largest rectangle that can be formed.",
+    function: "function largestRectangleArea(heights) { }",
+    testCases: [
+      { input: [2, 1, 5, 6, 2, 3], expected: 10 },
+      { input: [2, 4], expected: 4 },
+    ],
+  },
+  {
+    id: 13,
+    language: "CPP",
+    difficulty: "HARD",
+    title: "Longest Valid Parentheses",
+    description: "Given a string containing just the characters '(' and ')', find the length of the longest valid (well-formed) parentheses substring.",
+    function: "int longestValidParentheses(string s);",
+    testCases: [
+      { input: '"(()"', expected: 2 },
+      { input: '")()())"', expected: 4 },
+    ],
+  },
+  {
+    id: 14,
+    language: "CPP",
+    difficulty: "MEDIUM",
+    title: "Count Primes",
+    description: "Return the number of prime numbers that are strictly less than a given number n. Use an efficient algorithm like the Sieve of Eratosthenes.",
+    function: "int countPrimes(int n);",
+    testCases: [
+      { input: 10, expected: 4 },
+      { input: 0, expected: 0 },
+    ],
+  },
+];

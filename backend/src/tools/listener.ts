@@ -48,25 +48,33 @@ export function listener(io: Server, activeRooms: Map<number, Room>) {
         return;
       }
 
-      if (room.mode === "DUEL" && room.players.length >= 2) {
+      if (
+        room.mode === "DUEL" &&
+        room.players.length >= 2 &&
+        !room.players.includes(userId)
+      ) {
         socket.emit("error", { msg: "Room is full" });
         return;
       }
 
-      if (room.players.includes(userId)) {
-        socket.join(String(roomId));
-        socket.emit("error", { msg: "User already in the room" });
-        return;
+      // Only add the player if not already in the room
+      if (!room.players.includes(userId)) {
+        const playerId = await joinRoom(room.roomId, userId);
+        if (!playerId) {
+          socket.emit("error", { msg: "Failed to join room" });
+          return;
+        }
+        room.addPlayer(playerId);
       }
 
-      const playerId = await joinRoom(room.roomId, userId);
-      if (!playerId) return;
-
-      room.addPlayer(playerId);
+      // Always join socket room and update map
       userSocketMap.set(userId, socket.id);
       socket.join(String(roomId));
+
+      // Send confirmation to this user
       socket.emit("room-joined", { roomId });
 
+      // Notify everyone in the room
       io.to(String(roomId)).emit("player-joined", {
         players: room.players,
       });
@@ -101,9 +109,10 @@ export function listener(io: Server, activeRooms: Map<number, Room>) {
         }
       }
     });
+    
 
     socket.on("start-room", async (roomId) => {
-      const parsedRoomId = parseInt(roomId)
+      const parsedRoomId = parseInt(roomId);
       const room = activeRooms.get(parsedRoomId);
       if (!room) {
         socket.emit("error", { msg: "Room not found" });
@@ -115,7 +124,7 @@ export function listener(io: Server, activeRooms: Map<number, Room>) {
         return;
       }
       await startRoom(parsedRoomId);
-      room.startRoom();
+      await room.startRoom();
     });
 
     socket.on("disconnect", async () => {

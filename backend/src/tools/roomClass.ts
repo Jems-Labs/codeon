@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { getQuestions } from "./roomTools";
 
 export class Room {
   roomStatus: "STARTED" | "FINISHED" | "NOTSTARTED";
@@ -34,15 +35,24 @@ export class Room {
     this.io = io;
   }
 
-  startRoom() {
+  async startRoom() {
     if (this.roomStatus === "STARTED") return;
     this.roomStatus = "STARTED";
     this.io.to(String(this.roomId)).emit("room-started");
 
     let countdown = this.timer;
+
+    const questions = await getQuestions(this.language);
+
+    setTimeout(() => {
+      this.io.to(String(this.roomId)).emit("room-questions", questions);
+    }, 500);
+
     this.interval = setInterval(() => {
       countdown--;
-      this.io.to(String(this.roomId)).emit("room-timer", { remaining: countdown });
+      this.io
+        .to(String(this.roomId))
+        .emit("room-timer", { remaining: countdown });
 
       if (countdown <= 0) {
         this.endRoom();

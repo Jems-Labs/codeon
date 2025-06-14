@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import prisma from "../lib/prisma";
 import { RoomType } from "../types/types";
 import { Room } from "./roomClass";
+import { questions } from "./questions";
 
 export async function createRoom(data: RoomType, userId: string) {
   try {
@@ -134,4 +135,11 @@ export async function startRoom(roomId: number) {
       status: "STARTED",
     },
   });
+}
+export async function getQuestions(language: string) {
+  const allQuestions = questions.filter((q) => q.language === language);
+  if (allQuestions.length === 0) {
+    return [];
+  }
+  return allQuestions;
 }
